@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}My Applications{% endblock %}
+{% block content %}
+<h2 class="mb-4">My Applications</h2>
+<table class="table bg-white">
+    <thead><tr><th>Opportunity</th><th>Organization</th><th>Status</th><th>Applied</th><th></th></tr></thead>
+    <tbody>
+    {% for app in applications %}
+        <tr>
+            <td><a href="{% url 'opportunities:detail' app.opportunity.pk %}">{{ app.opportunity.title }}</a></td>
+            <td>{{ app.opportunity.organization.name }}</td>
+            <td><span class="badge badge-status-{{ app.status }}">{{ app.get_status_display }}</span></td>
+            <td>{{ app.applied_at|date:"M d, Y" }}</td>
+            <td>
+                {% if app.status == "pending" %}
+                <form method="post" action="{% url 'applications:withdraw' app.pk %}">
+                    {% csrf_token %}
+                    <button class="btn btn-sm btn-outline-danger">Withdraw</button>
+                </form>
+                {% endif %}
+            </td>
+        </tr>
+    {% empty %}
+        <tr><td colspan="5" class="text-muted">You haven't applied to any opportunities yet.</td></tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

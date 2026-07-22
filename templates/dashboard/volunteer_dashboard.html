@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}My Dashboard{% endblock %}
+{% block content %}
+<h2 class="mb-4">Welcome back, {{ user.first_name|default:user.username }}!</h2>
+
+<div class="row g-3 mb-4">
+    <div class="col-md-4"><div class="card stat-card"><h2>{{ total_approved_hours }}</h2><p class="mb-0 text-muted">Approved Hours</p></div></div>
+    <div class="col-md-4"><div class="card stat-card"><h2>{{ profile.badge_level }}</h2><p class="mb-0 text-muted">Badge Level</p></div></div>
+    <div class="col-md-4"><div class="card stat-card"><h2>{{ applications.count }}</h2><p class="mb-0 text-muted">Recent Applications</p></div></div>
+</div>
+
+<div class="d-flex gap-2 mb-4">
+    <a href="{% url 'opportunities:list' %}" class="btn btn-success">Browse Opportunities</a>
+    <a href="{% url 'applications:my_applications' %}" class="btn btn-outline-success">My Applications</a>
+    <a href="{% url 'hours:log_hours' %}" class="btn btn-outline-success">Log Hours</a>
+    <a href="{% url 'hours:my_hours' %}" class="btn btn-outline-success">My Hours</a>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <h5>Recent Applications</h5>
+        <ul class="list-group mb-4">
+            {% for app in applications %}
+            <li class="list-group-item d-flex justify-content-between">
+                {{ app.opportunity.title }}
+                <span class="badge badge-status-{{ app.status }}">{{ app.get_status_display }}</span>
+            </li>
+            {% empty %}<li class="list-group-item text-muted">No applications yet.</li>{% endfor %}
+        </ul>
+    </div>
+    <div class="col-md-6">
+        <h5>Recommended For You</h5>
+        <ul class="list-group mb-4">
+            {% for opp in recommended %}
+            <li class="list-group-item">
+                <a href="{% url 'opportunities:detail' opp.pk %}">{{ opp.title }}</a>
+                <span class="text-muted small d-block">{{ opp.organization.name }}</span>
+            </li>
+            {% empty %}<li class="list-group-item text-muted">No recommendations right now.</li>{% endfor %}
+        </ul>
+    </div>
+</div>
+{% endblock %}

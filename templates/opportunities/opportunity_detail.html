@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block title %}{{ opportunity.title }}{% endblock %}
+{% block content %}
+<div class="card p-4">
+    <div class="d-flex justify-content-between align-items-start">
+        <div>
+            <h2>{{ opportunity.title }}</h2>
+            <p class="text-muted">
+                <a href="{% url 'organizations:detail' opportunity.organization.pk %}">{{ opportunity.organization.name }}</a>
+                {% if opportunity.category %}&middot; {{ opportunity.category.name }}{% endif %}
+            </p>
+        </div>
+        <span class="badge bg-secondary text-uppercase">{{ opportunity.get_status_display }}</span>
+    </div>
+
+    <p class="mt-3">{{ opportunity.description|linebreaks }}</p>
+
+    <div class="row mt-3">
+        <div class="col-md-6">
+            <p><i class="fa-solid fa-calendar"></i> {{ opportunity.start_date }} &ndash; {{ opportunity.end_date }}</p>
+            {% if opportunity.start_time %}<p><i class="fa-solid fa-clock"></i> {{ opportunity.start_time }} &ndash; {{ opportunity.end_time }}</p>{% endif %}
+            <p><i class="fa-solid fa-location-dot"></i> {% if opportunity.is_remote %}Remote{% else %}{{ opportunity.location }}{% endif %}</p>
+        </div>
+        <div class="col-md-6">
+            <p><i class="fa-solid fa-users"></i> {{ opportunity.approved_volunteers_count }} / {{ opportunity.volunteers_needed }} volunteers confirmed</p>
+            <p>
+                {% for skill in opportunity.skills_required.all %}
+                <span class="badge bg-secondary">{{ skill.name }}</span>
+                {% endfor %}
+            </p>
+        </div>
+    </div>
+
+    {% if user.is_authenticated and user.is_volunteer %}
+        {% if already_applied %}
+            <div class="alert alert-info mt-3 mb-0">You've already applied to this opportunity.</div>
+        {% elif opportunity.is_full %}
+            <div class="alert alert-warning mt-3 mb-0">This opportunity is currently full.</div>
+        {% else %}
+            <a href="{% url 'applications:apply' opportunity.pk %}" class="btn btn-success mt-3">Apply Now</a>
+        {% endif %}
+    {% elif not user.is_authenticated %}
+        <a href="{% url 'accounts:login' %}" class="btn btn-success mt-3">Log in to Apply</a>
+    {% endif %}
+
+    {% if user.is_authenticated and user.is_org_admin and opportunity.organization.admin_id == user.id %}
+        <div class="mt-3">
+            <a href="{% url 'opportunities:edit' opportunity.pk %}" class="btn btn-outline-secondary btn-sm">Edit</a>
+            <a href="{% url 'applications:review_applications' opportunity.pk %}" class="btn btn-outline-success btn-sm">Review Applications</a>
+            <a href="{% url 'opportunities:delete' opportunity.pk %}" class="btn btn-outline-danger btn-sm">Delete</a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

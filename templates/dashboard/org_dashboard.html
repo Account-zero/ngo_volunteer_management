@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}Organization Dashboard{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>{{ org.name }} Dashboard {% if not org.is_verified %}<span class="badge bg-warning text-dark">Pending Verification</span>{% endif %}</h2>
+    <a href="{% url 'opportunities:create' %}" class="btn btn-success">+ New Opportunity</a>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-md-3"><div class="card stat-card"><h2>{{ opportunities.count }}</h2><p class="mb-0 text-muted">Total Opportunities</p></div></div>
+    <div class="col-md-3"><div class="card stat-card"><h2>{{ pending_applications.count }}</h2><p class="mb-0 text-muted">Pending Applications</p></div></div>
+    <div class="col-md-3"><div class="card stat-card"><h2>{{ pending_hours.count }}</h2><p class="mb-0 text-muted">Pending Hour Logs</p></div></div>
+</div>
+
+<div class="d-flex gap-2 mb-4">
+    <a href="{% url 'opportunities:manage_list' %}" class="btn btn-outline-success">Manage Opportunities</a>
+    <a href="{% url 'hours:pending_hours' %}" class="btn btn-outline-success">Review Hour Logs</a>
+    <a href="{% url 'organizations:edit' %}" class="btn btn-outline-secondary">Edit Org Profile</a>
+</div>
+
+<h5>Recent Pending Applications</h5>
+<table class="table bg-white">
+    <thead><tr><th>Volunteer</th><th>Opportunity</th><th>Applied</th><th></th></tr></thead>
+    <tbody>
+    {% for app in pending_applications %}
+        <tr>
+            <td>{{ app.volunteer.get_full_name|default:app.volunteer.username }}</td>
+            <td>{{ app.opportunity.title }}</td>
+            <td>{{ app.applied_at|date:"M d, Y" }}</td>
+            <td><a href="{% url 'applications:review_applications' app.opportunity.pk %}" class="btn btn-sm btn-outline-success">Review</a></td>
+        </tr>
+    {% empty %}<tr><td colspan="4" class="text-muted">No pending applications.</td></tr>{% endfor %}
+    </tbody>
+</table>
+{% endblock %}

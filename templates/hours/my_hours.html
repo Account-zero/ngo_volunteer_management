@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}My Hours{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>My Hours <span class="badge bg-success">{{ total_approved }} approved</span></h2>
+    <a href="{% url 'hours:log_hours' %}" class="btn btn-success">+ Log Hours</a>
+</div>
+<table class="table bg-white">
+    <thead><tr><th>Opportunity</th><th>Date</th><th>Hours</th><th>Status</th></tr></thead>
+    <tbody>
+    {% for log in logs %}
+        <tr>
+            <td>{{ log.opportunity.title }}</td>
+            <td>{{ log.date }}</td>
+            <td>{{ log.hours }}</td>
+            <td><span class="badge badge-status-{{ log.status }}">{{ log.get_status_display }}</span></td>
+        </tr>
+    {% empty %}
+        <tr><td colspan="4" class="text-muted">No hours logged yet.</td></tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Admin Dashboard{% endblock %}
+{% block content %}
+<h2 class="mb-4">Platform Overview</h2>
+<div class="row g-3 mb-4">
+    <div class="col-md-3"><div class="card stat-card"><h2>{{ stats.total_volunteers }}</h2><p class="text-muted mb-0">Volunteers</p></div></div>
+    <div class="col-md-3"><div class="card stat-card"><h2>{{ stats.total_organizations }}</h2><p class="text-muted mb-0">Organizations</p></div></div>
+    <div class="col-md-3"><div class="card stat-card"><h2>{{ stats.published_opportunities }}</h2><p class="text-muted mb-0">Live Opportunities</p></div></div>
+    <div class="col-md-3"><div class="card stat-card"><h2>{{ stats.total_approved_hours }}</h2><p class="text-muted mb-0">Approved Hours</p></div></div>
+</div>
+
+<h5>Organizations Awaiting Verification ({{ stats.unverified_organizations }})</h5>
+<table class="table bg-white">
+    <thead><tr><th>Name</th><th>Email</th><th>Registered</th><th></th></tr></thead>
+    <tbody>
+    {% for org in unverified_orgs %}
+        <tr>
+            <td>{{ org.name }}</td>
+            <td>{{ org.email }}</td>
+            <td>{{ org.created_at|date:"M d, Y" }}</td>
+            <td>
+                <form method="post" action="{% url 'dashboard:verify_organization' org.pk %}">
+                    {% csrf_token %}<button class="btn btn-sm btn-success">Verify</button>
+                </form>
+            </td>
+        </tr>
+    {% empty %}<tr><td colspan="4" class="text-muted">All organizations verified.</td></tr>{% endfor %}
+    </tbody>
+</table>
+<a href="/admin/" class="btn btn-outline-secondary mt-3">Go to Full Admin Panel</a>
+{% endblock %}

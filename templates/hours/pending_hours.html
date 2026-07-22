@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Pending Hours{% endblock %}
+{% block content %}
+<h2 class="mb-4">Pending Hour Approvals</h2>
+<table class="table bg-white">
+    <thead><tr><th>Volunteer</th><th>Opportunity</th><th>Date</th><th>Hours</th><th>Notes</th><th>Actions</th></tr></thead>
+    <tbody>
+    {% for log in logs %}
+        <tr>
+            <td>{{ log.volunteer.get_full_name|default:log.volunteer.username }}</td>
+            <td>{{ log.opportunity.title }}</td>
+            <td>{{ log.date }}</td>
+            <td>{{ log.hours }}</td>
+            <td class="small">{{ log.description|default:"—"|truncatewords:10 }}</td>
+            <td>
+                <form method="post" action="{% url 'hours:update_status' log.pk 'approved' %}" class="d-inline">
+                    {% csrf_token %}<button class="btn btn-sm btn-success">Approve</button>
+                </form>
+                <form method="post" action="{% url 'hours:update_status' log.pk 'rejected' %}" class="d-inline">
+                    {% csrf_token %}<button class="btn btn-sm btn-outline-danger">Reject</button>
+                </form>
+            </td>
+        </tr>
+    {% empty %}
+        <tr><td colspan="6" class="text-muted">No pending hour submissions.</td></tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

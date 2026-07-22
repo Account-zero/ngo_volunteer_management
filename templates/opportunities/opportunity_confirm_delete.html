@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}Delete Opportunity{% endblock %}
+{% block content %}
+<div class="card p-4">
+    <h4>Delete "{{ opportunity.title }}"?</h4>
+    <p class="text-muted">This action cannot be undone.</p>
+    <form method="post">
+        {% csrf_token %}
+        <button class="btn btn-danger" type="submit">Yes, delete</button>
+        <a href="{% url 'opportunities:detail' opportunity.pk %}" class="btn btn-outline-secondary">Cancel</a>
+    </form>
+</div>
+{% endblock %}

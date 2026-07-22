@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Sign up{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <h3 class="mb-4 text-center">Join as...</h3>
+        <div class="row g-4">
+            <div class="col-md-6">
+                <div class="card p-4 text-center h-100">
+                    <i class="fa-solid fa-person-hiking fa-3x mb-3" style="color:#1f6f5c;"></i>
+                    <h5>Volunteer</h5>
+                    <p class="text-muted">Find opportunities and make an impact in your community.</p>
+                    <a href="{% url 'accounts:signup_volunteer' %}" class="btn btn-success mt-auto">Sign up as Volunteer</a>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card p-4 text-center h-100">
+                    <i class="fa-solid fa-building fa-3x mb-3" style="color:#1f6f5c;"></i>
+                    <h5>Organization</h5>
+                    <p class="text-muted">Post opportunities and manage volunteers for your cause.</p>
+                    <a href="{% url 'accounts:signup_organization' %}" class="btn btn-success mt-auto">Sign up as Organization</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
